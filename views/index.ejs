@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=263963a7c1e671031e3e4902c3987a30"></script>
+  </head>
+  <body>
+    <div id="navbar"><%= title %></div>
+    <div id="infoBox">
+      <div id="infoTitle">현재 시각</div>
+      <div id="infoDate"></div>
+      <div id="infoTime"></div>
+    </div>
+    <div id="levelBox">
+      <button id="btn_zoomin" onclick="zoomIn()">+</button><br><br>
+      <button id="btn_zoomout" onclick="zoomOut()">-</button>
+    </div>
+    <div id="map"></div>
+    <script type="text/javascript">
+      const mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+        mapOption = { 
+            center: new kakao.maps.LatLng(37.5642135, 127.0016985), // 지도의 중심좌표
+            level: 5 // 지도의 확대 레벨
+        };
+
+      // 지도를 표시할 div와  지도 옵션으로  지도를 생성
+      const map = new kakao.maps.Map(mapContainer, mapOption); 
+      // 마커 개수 저장하는 변수
+      let marker_count = 0;
+
+
+      kakao.maps.event.addListener(map, 'click', function(mouseEvent){
+        let latlng = mouseEvent.latLng;
+
+        let input = prompt('해당 좌표에 등록할 이름을 입력해주세요.', '집');
+
+        if(input==null){
+          alert("취소");
+        } else {
+          // 위치 커스텀 마커 위치
+          let markerPosition2 = new kakao.maps.LatLng(latlng.getLat(),latlng.getLng());
+
+          marker_count++;
+
+          const marker2 = new kakao.maps.Marker({
+                position: markerPosition2
+              });
+
+          console.log(marker_count + '번째 마커의 ' + '(' + input + ')' + '위도 ' + latlng.getLat() + ' 경도 ' + latlng.getLng() + ' 입니다.');
+
+          marker2.setMap(map);
+        }
+
+        
+              
+      });
+      
+
+      //마커 위치 저장할 const   
+      const markerPosition1 = new kakao.maps.LatLng(37.5642135, 127.0016985);
+      
+      //마우스 클릭한 곳 위도경도 리턴
+      //let latlng = mouseEvent.latLng;
+
+      
+      //저장한 위치를 마커로 설정
+      const marker1 = new kakao.maps.Marker({
+        position: markerPosition1
+      });
+      
+
+      //지도 위에 마커 띄우기
+      marker1.setMap(map);
+
+      // 지도 레벨 표시
+      displayLevel();
+
+      let today = new Date();
+
+      let year = today.getFullYear(); //년도
+      let month = today.getMonth(); //월
+      let date = today.getDate(); //일
+      let day = today.getDay(); //요일
+
+      let hours = today.getHours(); //시
+      let minutes = today.getMinutes(); //분
+
+      //현재시각정보표시
+      const todays_date = document.getElementById('infoDate');
+      const now_time = document.getElementById('infoTime');
+
+      let str_todaysdate = year + '년 ' + month + '월 ' + date + '일';
+      let str_nowtime = hours + '시 ' + minutes + '분 ';
+      todays_date.innerText = str_todaysdate;
+      now_time.innerText = str_nowtime;
+      
+      //레벨버튼클릭
+      const btn_plus = document.getElementById('btn_zoomin');
+      const btn_minus = document.getElementById('btn_zoomout');
+
+      function zoomIn(){
+        let level = map.getLevel();
+        map.setLevel(level-1);
+        displayLevel();
+        //alert('+클릭');
+      }
+
+      function zoomOut(){
+        let level = map.getLevel();
+        map.setLevel(level+1);
+        displayLevel();
+        //alert('-클릭');
+      }
+
+      function displayLevel(){
+        console.log('현재 레벨은 ' + map.getLevel() + ' 입니다. ');
+      }
+
+      add_position();
+
+    </script>
+  </body>
+</html>
